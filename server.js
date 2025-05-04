@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY
 });
 
 app.post('/generate', async (req, res) => {
@@ -28,7 +28,9 @@ app.post('/generate', async (req, res) => {
       messages: [{ role: 'user', content: prompt }]
     });
 
-    res.json({ resume: response.choices[0].message.content });
+    const generatedText = response.choices[0].message.content;
+    res.json({ resume: generatedText });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to generate resume' });
