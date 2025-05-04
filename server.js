@@ -1,31 +1,39 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const { Configuration, OpenAIApi } = require('openai');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { OpenAI } from 'openai';
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-const config = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(config);
 
 app.post('/generate', async (req, res) => {
-  const { name, job, skills, experience } = req.body;
-  const prompt = `Create a resume for ${name} applying for ${job}. Skills: ${skills}. Experience: ${experience}`;
+  try {
+    const { name, email, skills, experience } = req.body;
 
-  const response = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt,
-    max_tokens: 300
-  });
+    const prompt = `Generate a professional resume for:
+    Name: ${name}
+    Email: ${email}
+    Skills: ${skills}
+    Experience: ${experience}`;
 
-  res.json({ resume: response.data.choices[0].text });
+    const response = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: prompt }]
+    });
+
+    res.json({ resume: response.choices[0].message.content });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to generate resume' });
+  }
 });
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
