@@ -2,12 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>AI Resume App</title>
+  <title>AI Resume Builder</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Welcome to AI Resume Builder</h1>
-  <p>Simple frontend setup</p>
+  <div class="container">
+    <h1>AI Resume Generator</h1>
+    <form id="resume-form">
+      <input type="text" id="name" placeholder="Enter your name" required />
+      <input type="text" id="position" placeholder="Enter position" required />
+      <textarea id="details" placeholder="Enter your details..." required></textarea>
+      <button type="submit">Generate Resume</button>
+    </form>
+    <pre id="result"></pre>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
