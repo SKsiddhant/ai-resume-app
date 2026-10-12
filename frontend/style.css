@@ -40,3 +40,8 @@ pre {
   margin-top: 1rem;
   white-space: pre-wrap;
 }
+
+label { display: block; margin-top: 0.5rem; font-weight: 600; }
+input, textarea { width: 100%; box-sizing: border-box; }
+button:disabled { opacity: 0.6; cursor: wait; }
+#status { min-height: 1.2em; color: #b00020; }

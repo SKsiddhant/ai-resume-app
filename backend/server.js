@@ -1,31 +1,28 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const { Configuration, OpenAIApi } = require('openai');
-require('dotenv').config();
+import 'dotenv/config';
+import { OpenAI } from 'openai';
+import { createApp } from './app.js';
 
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
+if (!process.env.OPENAI_API_KEY) {
+  console.error('OPENAI_API_KEY is not set. Copy backend/.env.example to backend/.env and fill it in.');
+  process.exit(1);
+}
 
-const config = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY
-});
-const openai = new OpenAIApi(config);
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const model = process.env.OPENAI_MODEL || 'gpt-4o-mini';
 
-app.post('/generate', async (req, res) => {
-  const { name, job, skills, experience } = req.body;
-  const prompt = `Create a resume for ${name} applying for ${job}. Skills: ${skills}. Experience: ${experience}`;
-
-  const response = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt,
-    max_tokens: 300
+async function generate(prompt) {
+  const response = await openai.chat.completions.create({
+    model,
+    messages: [{ role: 'user', content: prompt }],
+    max_tokens: 800,
   });
+  return response.choices?.[0]?.message?.content?.trim() ?? '';
+}
 
-  res.json({ resume: response.data.choices[0].text });
-});
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+const PORT = process.env.PORT || 3000;
+createApp({ generate, allowedOrigins }).listen(PORT, () => console.log(`Server running on port ${PORT}`));
