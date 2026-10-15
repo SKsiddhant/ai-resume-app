@@ -2,20 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>AI Resume Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Resume Generator</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <h1>AI Resume Generator</h1>
     <form id="resume-form">
-      <input type="text" id="name" placeholder="Enter your name" required />
-      <input type="text" id="position" placeholder="Enter position" required />
-      <textarea id="details" placeholder="Enter your details..." required></textarea>
-      <button type="submit">Generate Resume</button>
+      <label for="name">Name</label>
+      <input type="text" id="name" maxlength="100" placeholder="Enter your name" required />
+      <label for="position">Position</label>
+      <input type="text" id="position" maxlength="100" placeholder="Position you are applying for" required />
+      <label for="details">Details</label>
+      <textarea id="details" maxlength="4000" rows="6" placeholder="Skills, experience, education…" required></textarea>
+      <button type="submit" id="submit">Generate Resume</button>
     </form>
+    <p id="status" role="status" aria-live="polite"></p>
     <pre id="result"></pre>
   </div>
+  <script src="config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
