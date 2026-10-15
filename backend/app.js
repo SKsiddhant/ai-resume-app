@@ -19,7 +19,13 @@ export function parseBody(body) {
   return { value };
 }
 
-export function buildPrompt({ name, position, details }) {
+// User text must not be able to forge the fence markers and "close" the data block early.
+const defang = (text) => text.replace(/-{3}\s*(BEGIN|END) CANDIDATE DATA\s*-{3}/gi, '[marker removed]');
+
+export function buildPrompt(fields) {
+  const name = defang(fields.name);
+  const position = defang(fields.position);
+  const details = defang(fields.details);
   return [
     'Write a concise, professional one-page resume in plain text.',
     'Use only the facts supplied below; do not invent employers, dates or degrees.',
